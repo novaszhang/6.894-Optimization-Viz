@@ -126,3 +126,45 @@ ul ul a {
         display: none;
     }
 }
+
+/* ---------------------------------------------------
+    Contour plot
+----------------------------------------------------- */
+
+<style>
+.sgd {
+    stroke: black;
+}
+
+.momentum {
+    stroke: blue;
+}
+
+.rmsprop {
+    stroke: red;
+}
+
+.adam {
+    stroke: green;
+}
+
+.SGD {
+    fill: black;
+}
+
+.Momentum {
+    fill: blue;
+}
+
+.RMSProp {
+    fill: red;
+}
+
+.Adam {
+    fill: green;
+}
+
+circle:hover {
+  fill-opacity: .3;
+}
+</style>

@@ -1,12 +1,5 @@
-// Parameters describing where function is defined
-var domain_x = [0,10],
-    domain_y = [0,10],
-    func = "3x^3 + x^2 - y^2 + 5y"
-    domain_f = [-2, 8], //Need to calc
-    contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
-
-var width = window.innerWidth - 10,
-    height = window.innerHeight - 10,
+var width = 960,
+    height = 500,
     nx = parseInt(width / 5), // grid sizes
     ny = parseInt(height / 5),
     h = 1e-7, // step used when approximating gradients
@@ -17,13 +10,37 @@ var svg = d3.select("body")
             .attr("width", width)
             .attr("height", height);
 
+//Default function, domain, range
+var func,
+    xmin,
+    xmax,
+    ymin,
+    ymax
+
+//gets function domain, range & function
 function get_val() {
-  domain_x = [document.getElementById("xmin"), document.getElementById("xmax")],
-  domain_y = [document.getElementById("ymin"), document.getElementById("ymax")],
-  func = document.getElementById("func").toString(),
-  domain_f = [-2, 8], //Need to calc
-  contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
+    func = document.getElementById("func").value.toString()
+    xmin = document.getElementById("xmin").value
+    ymin = document.getElementById("ymin").value
+    xmax = document.getElementById("xmax").value
+    ymax = document.getElementById("ymax").value
+    draw()
 }
+
+function draw() {
+
+}
+
+
+var function_g = svg.append("g").on("mousedown", mousedown),
+    gradient_path_g = svg.append("g"),
+    menu_g = svg.append("g");
+
+// Parameters describing where function is defined
+var domain_x = [xmin, xmax],
+    domain_y = [ymin, ymax],
+    domain_f = [0, 0], // calculate from domain_x and domain_y
+    contour_step = (domain_f[1] - domain_f[0])/20; // Step size of contour plot
 
 var scale_x = d3.scaleLinear()
                 .domain([0, width])
@@ -39,25 +56,15 @@ var color_scale = d3.scaleLinear()
     .domain(d3.extent(thresholds))
     .interpolate(function() { return d3.interpolateYlGnBu; });
 
-var function_g = svg.append("g").on("mousedown", mousedown),
-    gradient_path_g = svg.append("g"),
-    menu_g = svg.append("g");
-
 /*
  * Set up the function and gradients
  */
 
-/* Value of f at (x, y) */
-//function f(x, y) {
-//    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
-//}
-
 /* Returns gradient of f at (x, y) */
 function grad_f(x,y) {
-    var grad_x = math.derivative(func, 'x')
-        grad_y = math.derivative(func, 'y')
-
-    return [math.evaluate(grad_x, 'x'), math.evaluate(grad_y, 'y')];
+    var grad_x = (f(x + h, y) - f(x, y)) / h
+        grad_y = (f(x, y + h) - f(x, y)) / h
+    return [grad_x, grad_y];
 }
 
 
@@ -69,7 +76,7 @@ function get_f_values(nx, ny) {
             var x = scale_x( parseFloat(i) / nx * width ),
                 y = scale_y( parseFloat(j) / ny * height );
             // Set value at ordering expected by d3.contour
-            grid[i + j * nx] = math.evaluate(func, {x:x, y:y});
+            grid[i + j * nx] = f(x, y);
         }
     }
     return grid;

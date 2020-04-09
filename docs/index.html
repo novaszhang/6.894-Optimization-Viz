@@ -13,34 +13,37 @@
 		<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
+    	<!-- Math for evaluating functions -->
+    	<script src="https://unpkg.com/mathjs@6.6.2/dist/math.min.js"></script>
+
     </head>
     <body>
     	<div class="wrapper">
 		    <!-- Sidebar -->
 		    <nav id="sidebar">
 		        <div class="sidebar-header">
-		            <h3>Bootstrap Sidebar</h3>
+		            <h3>Options </h3>
 		        </div>
 
 		        <ul class="list-unstyled components">
-		            <p>Enter function here </p>
+		            <!--<p>Enter function here </p>-->
 
 		            <label for="func"> Function: </label>
-		            <input type="text" id="func" name="func">
-
+		            <input type="text" id="func" name="func" value="3x^3 + x^2 - y^2 + 5y">
+		            <br>
 		            <label for="xmin"> X min: </label>
-		            <input type="text" id="xmin" name="xmin">
+		            <input type="text" id="xmin" name="xmin" value="0">
 
 		            <label for="ymin"> Y min: </label>
-		            <input type="text" id="ymin" name="ymin">
+		            <input type="text" id="ymin" name="ymin" value="10">
 
 		            <label for="xmax"> X max: </label>
-		            <input type="text" id="xmax" name="xmax">
+		            <input type="text" id="xmax" name="xmax" value="0">
 
 		            <label for="ymax"> Y max: </label>
-		            <input type="text" id="ymax" name="ymax">
+		            <input type="text" id="ymax" name="ymax" value="10">
 
-		            <button onclick="domain_range()">Submit: </button>
+		            <button onclick="get_val()">Submit</button>
 
 		            <li class="active">
 		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
@@ -107,7 +110,6 @@
 	    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 	    <!-- jQuery Custom Scroller CDN -->
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
 
 	    <!-- D3 -->
     	<script src="https://d3js.org/d3.v5.min.js"></script>

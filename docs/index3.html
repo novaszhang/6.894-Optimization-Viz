@@ -1,12 +1,51 @@
-// Parameters describing where function is defined
-var domain_x = [0,10],
-    domain_y = [0,10],
-    func = "3x^3 + x^2 - y^2 + 5y"
-    domain_f = [-2, 8], //Need to calc
-    contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
 
-var width = window.innerWidth - 10,
-    height = window.innerHeight - 10,
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.sgd {
+    stroke: red;
+}
+
+.momentum {
+    stroke: orange;
+}
+
+.rmsprop {
+    stroke: blue;
+}
+
+.adam {
+    stroke: green;
+}
+
+.SGD {
+    fill: red;
+}
+
+.Momentum {
+    fill: orange;
+}
+
+.RMSProp {
+    fill: blue;
+}
+
+.Adam {
+    fill: green;
+}
+
+circle:hover {
+  fill-opacity: .3;
+}
+</style>
+<body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/d3-contour.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script>
+
+var width = window.innerWidth,
+    height = window.innerHeight,
     nx = parseInt(width / 5), // grid sizes
     ny = parseInt(height / 5),
     h = 1e-7, // step used when approximating gradients
@@ -17,13 +56,11 @@ var svg = d3.select("body")
             .attr("width", width)
             .attr("height", height);
 
-function get_val() {
-  domain_x = [document.getElementById("xmin"), document.getElementById("xmax")],
-  domain_y = [document.getElementById("ymin"), document.getElementById("ymax")],
-  func = document.getElementById("func").toString(),
-  domain_f = [-2, 8], //Need to calc
-  contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
-}
+// Parameters describing where function is defined
+var domain_x = [-2, 2],
+    domain_y = [-2, 2],
+    domain_f = [-2, 8],
+    contour_step = 0.5; // Step size of contour plot
 
 var scale_x = d3.scaleLinear()
                 .domain([0, width])
@@ -48,16 +85,15 @@ var function_g = svg.append("g").on("mousedown", mousedown),
  */
 
 /* Value of f at (x, y) */
-//function f(x, y) {
-//    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
-//}
+function f(x, y) {
+    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
+}
 
 /* Returns gradient of f at (x, y) */
 function grad_f(x,y) {
-    var grad_x = math.derivative(func, 'x')
-        grad_y = math.derivative(func, 'y')
-
-    return [math.evaluate(grad_x, 'x'), math.evaluate(grad_y, 'y')];
+    var grad_x = (f(x + h, y) - f(x, y)) / h
+        grad_y = (f(x, y + h) - f(x, y)) / h
+    return [grad_x, grad_y];
 }
 
 
@@ -69,7 +105,7 @@ function get_f_values(nx, ny) {
             var x = scale_x( parseFloat(i) / nx * width ),
                 y = scale_y( parseFloat(j) / ny * height );
             // Set value at ordering expected by d3.contour
-            grid[i + j * nx] = math.evaluate(func, {x:x, y:y});
+            grid[i + j * nx] = f(x, y);
         }
     }
     return grid;
@@ -291,3 +327,5 @@ function minimize(x0,y0) {
         draw_path(adam_data, "adam");
     }
 }
+
+</script>

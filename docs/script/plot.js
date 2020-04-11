@@ -1,9 +1,9 @@
 // Parameters describing where function is defined
-var domain_x = [0,10],
-    domain_y = [0,10],
-    func = "3x^3 + x^2 - y^2 + 5y"
-    domain_f = [-2, 8], //Need to calc
-    contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
+var domain_x,
+    domain_y,
+    func,
+    domain_f, //Need to calc
+    contour_step; // Step size of contour plot
 
 var width = window.innerWidth - 10,
     height = window.innerHeight - 10,
@@ -17,80 +17,9 @@ var svg = d3.select("body")
             .attr("width", width)
             .attr("height", height);
 
-function get_val() {
-  domain_x = [document.getElementById("xmin"), document.getElementById("xmax")],
-  domain_y = [document.getElementById("ymin"), document.getElementById("ymax")],
-  func = document.getElementById("func").toString(),
-  domain_f = [-2, 8], //Need to calc
-  contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
-}
-
-var scale_x = d3.scaleLinear()
-                .domain([0, width])
-                .range(domain_x);
-
-var scale_y = d3.scaleLinear()
-                .domain([0, height])
-                .range(domain_y);
-
-var thresholds = d3.range(domain_f[0], domain_f[1], contour_step);
-
-var color_scale = d3.scaleLinear()
-    .domain(d3.extent(thresholds))
-    .interpolate(function() { return d3.interpolateYlGnBu; });
-
 var function_g = svg.append("g").on("mousedown", mousedown),
     gradient_path_g = svg.append("g"),
     menu_g = svg.append("g");
-
-/*
- * Set up the function and gradients
- */
-
-/* Value of f at (x, y) */
-//function f(x, y) {
-//    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
-//}
-
-/* Returns gradient of f at (x, y) */
-function grad_f(x,y) {
-    var grad_x = math.derivative(func, 'x')
-        grad_y = math.derivative(func, 'y')
-
-    return [math.evaluate(grad_x, 'x'), math.evaluate(grad_y, 'y')];
-}
-
-
-/* Returns values of f(x,y) at each point on grid as 1 dim array. */
-function get_f_values(nx, ny) {
-    var grid = new Array(nx * ny);
-    for (i = 0; i < nx; i++) {
-        for (j = 0; j < ny; j++) {
-            var x = scale_x( parseFloat(i) / nx * width ),
-                y = scale_y( parseFloat(j) / ny * height );
-            // Set value at ordering expected by d3.contour
-            grid[i + j * nx] = math.evaluate(func, {x:x, y:y});
-        }
-    }
-    return grid;
-}
-
-/*
- * Set up the contour plot
- */
-
-var contours = d3.contours()
-    .size([nx, ny])
-    .thresholds(thresholds);
-
-var f_values = get_f_values(nx, ny);
-
-function_g.selectAll("path")
-          .data(contours(f_values))
-          .enter().append("path")
-          .attr("d", d3.geoPath(d3.geoIdentity().scale(width / nx)))
-          .attr("fill", function(d) { return color_scale(d.value); })
-          .attr("stroke", "none");
 
 /*
  * Set up buttons
@@ -135,6 +64,87 @@ menu_g.selectAll("text")
       .attr("fill", "white")
       .attr("fill-opacity", 0.8);
 
+var scale_x,
+    scale_y,
+    f_values,
+    domain_f,
+    contour_step,
+    thresholds,
+    color_scale,
+    contours;
+
+function get_val() {
+  domain_x = [document.getElementById("xmin").value, document.getElementById("xmax").value],
+  domain_y = [document.getElementById("ymin").value, document.getElementById("ymax").value],
+
+  /* Value of f at (x, y) */
+  func = document.getElementById("func").value.toString()
+
+  scale_x = d3.scaleLinear()
+                .domain([0, width])
+                .range(domain_x);
+
+  scale_y = d3.scaleLinear()
+                .domain([0, height])
+                .range(domain_y);
+
+
+  f_values = get_f_values(nx, ny, func);
+  domain_f = [math.min(f_values), math.max(f_values)], //Need to calc
+  contour_step = (domain_f[1]-domain_f[0])/20; // Step size of contour plot
+
+
+  thresholds = d3.range(domain_f[0], domain_f[1], contour_step);
+
+  color_scale = d3.scaleLinear()
+    .domain(d3.extent(thresholds))
+    .interpolate(function() { return d3.interpolateYlGnBu; });
+
+/*
+ * Set up the contour plot
+ */
+
+  contours = d3.contours()
+    .size([nx, ny])
+    .thresholds(thresholds);
+
+
+function_g.selectAll("path")
+          .data(contours(f_values))
+          .enter().append("path")
+          .attr("d", d3.geoPath(d3.geoIdentity().scale(width / nx)))
+          .attr("fill", function(d) { return color_scale(d.value); })
+          .attr("stroke", "none");
+}
+
+get_val()
+
+/*
+ * Set up the function and gradients
+ */
+
+/* Returns values of f(x,y) at each point on grid as 1 dim array. */
+function get_f_values(nx, ny, func) {
+    var grid = new Array(nx * ny);
+    for (i = 0; i < nx; i++) {
+        for (j = 0; j < ny; j++) {
+            var x = scale_x( parseFloat(i) / nx * width ),
+                y = scale_y( parseFloat(j) / ny * height );
+            // Set value at ordering expected by d3.contour
+            grid[i + j * nx] = math.evaluate(func, {x:x, y:y});
+        }
+    }
+    return grid;
+}
+
+/* Returns gradient of f at (x, y) */
+function grad_f(x,y, func) {
+    var grad_x = math.derivative(func, 'x')
+        grad_y = math.derivative(func, 'y')
+
+    return [math.evaluate(grad_x, 'x'), math.evaluate(grad_y, 'y')];
+}
+
 function button_press() {
     var type = d3.select(this).attr("class")
     if (draw_bool[type]) {
@@ -155,7 +165,7 @@ function get_sgd_path(x0, y0, learning_rate, num_steps) {
     var sgd_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1, gradient;
     for (i = 0; i < num_steps; i++) {
-        gradient = grad_f(x0, y0);
+        gradient = grad_f(x0, y0, func);
         x1 = x0 - learning_rate * gradient[0]
         y1 = y0 - learning_rate * gradient[1]
         sgd_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
@@ -171,7 +181,7 @@ function get_momentum_path(x0, y0, learning_rate, num_steps, momentum) {
     var momentum_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1, gradient;
     for (i=0; i < num_steps; i++) {
-        gradient = grad_f(x0, y0)
+        gradient = grad_f(x0, y0, func)
         v_x = momentum * v_x - learning_rate * gradient[0]
         v_y = momentum * v_y - learning_rate * gradient[1]
         x1 = x0 + v_x
@@ -189,7 +199,7 @@ function get_rmsprop_path(x0, y0, learning_rate, num_steps, decay_rate, eps) {
     var rmsprop_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1, gradient;
     for (i = 0; i < num_steps; i++) {
-        gradient = grad_f(x0, y0)
+        gradient = grad_f(x0, y0, func)
         cache_x = decay_rate * cache_x + (1 - decay_rate) * gradient[0] * gradient[0]
         cache_y = decay_rate * cache_y + (1 - decay_rate) * gradient[1] * gradient[1]
         x1 = x0 - learning_rate * gradient[0] / (Math.sqrt(cache_x) + eps)
@@ -209,7 +219,7 @@ function get_adam_path(x0, y0, learning_rate, num_steps, beta_1, beta_2, eps) {
     var adam_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1, gradient;
     for (i = 0; i < num_steps; i++) {
-        gradient = grad_f(x0, y0)
+        gradient = grad_f(x0, y0, func)
         m_x = beta_1 * m_x + (1 - beta_1) * gradient[0]
         m_y = beta_1 * m_y + (1 - beta_1) * gradient[1]
         v_x = beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0]

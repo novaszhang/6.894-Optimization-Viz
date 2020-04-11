@@ -13,17 +13,38 @@
 		<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     	<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
+    	<!-- Math for evaluating functions -->
+    	<script src="https://unpkg.com/mathjs@6.6.2/dist/math.min.js"></script>
+
     </head>
     <body>
     	<div class="wrapper">
 		    <!-- Sidebar -->
 		    <nav id="sidebar">
 		        <div class="sidebar-header">
-		            <h3>Bootstrap Sidebar</h3>
+		            <h3>Options </h3>
 		        </div>
 
 		        <ul class="list-unstyled components">
-		            <p>Dummy Heading</p>
+		            <!--<p>Enter function here </p>-->
+
+		            <label for="func"> Function: </label>
+		            <input type="text" id="func" name="func" value="x^2 + y^2">
+		            <br>
+		            <label for="xmin"> X min: </label>
+		            <input type="text" id="xmin" name="xmin" value="-10">
+
+		            <label for="ymin"> Y min: </label>
+		            <input type="text" id="ymin" name="ymin" value="-10">
+
+		            <label for="xmax"> X max: </label>
+		            <input type="text" id="xmax" name="xmax" value="10">
+
+		            <label for="ymax"> Y max: </label>
+		            <input type="text" id="ymax" name="ymax" value="10">
+
+		            <button onclick="get_val()">Submit</button>
+
 		            <li class="active">
 		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
 		                <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -78,6 +99,9 @@
 		        </nav>
 		    </div>
 		</div>
+
+		<div id="gd_viz"></div>
+
 		<!-- jQuery CDN - Slim version (=without AJAX) -->
 	    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	    <!-- Popper.JS -->
@@ -87,7 +111,16 @@
 	    <!-- jQuery Custom Scroller CDN -->
 	    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
+	    <!-- D3 -->
+    	<script src="https://d3js.org/d3.v5.min.js"></script>
+
+	    <!-- D3 -->
+	    <script src="https://d3js.org/d3-contour.v1.min.js"></script>
+	    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
 	    <script src="script/sidebar.js"></script>
+
+	    <script src="script/plot.js"></script>
 
     </body>
 </html>

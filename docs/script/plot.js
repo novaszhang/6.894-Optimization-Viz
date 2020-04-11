@@ -40,8 +40,8 @@ menu_g.selectAll("circle")
       .data(buttons)
       .enter()
       .append("circle")
-      .attr("cx", function(d,i) { return width/4 * (i + 0.25);} )
-      .attr("cy", height - 20)
+      .attr("cx", function(d,i) { return width/8 * (i + 2.5);} )
+      .attr("cy", height - 40)
       .attr("r", 10)
       .attr("stroke-width", 0.5)
       .attr("stroke", "black")
@@ -54,10 +54,11 @@ menu_g.selectAll("text")
       .data(buttons)
       .enter()
       .append("text")
-      .attr("x", function(d,i) { return width/4 * (i + 0.25) + 18;} )
-      .attr("y", height - 14)
+      .attr("x", function(d,i) { return width/8 * (i + 2.5) + 18;} )
+      .attr("y", height - 40)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
+      .attr("stroke", "black")
       .attr("font-family", "Helvetica Neue")
       .attr("font-size", 15)
       .attr("font-weight", 200)
@@ -98,7 +99,7 @@ function get_val() {
 
   color_scale = d3.scaleLinear()
     .domain(d3.extent(thresholds))
-    .interpolate(function() { return d3.interpolateYlGnBu; });
+    .interpolate(function() { return d3.interpolateRdYlGn; });
 
 /*
  * Set up the contour plot
@@ -115,6 +116,10 @@ function_g.selectAll("path")
           .attr("d", d3.geoPath(d3.geoIdentity().scale(width / nx)))
           .attr("fill", function(d) { return color_scale(d.value); })
           .attr("stroke", "none");
+
+line_function = d3.line()
+          .x(function(d) { return d.x; })
+          .y(function(d) { return d.y; });
 }
 
 get_val()
@@ -238,9 +243,7 @@ function get_adam_path(x0, y0, learning_rate, num_steps, beta_1, beta_2, eps) {
  * Functions necessary for path visualizations
  */
 
-var line_function = d3.line()
-                      .x(function(d) { return d.x; })
-                      .y(function(d) { return d.y; });
+var line_function;
 
 function draw_path(path_data, type) {
     var gradient_path = gradient_path_g.selectAll(type)

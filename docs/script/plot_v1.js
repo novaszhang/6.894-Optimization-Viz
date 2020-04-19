@@ -26,7 +26,10 @@ var func,
     h = 1e-7, // step used when approximating gradients
     drawing_time = 30; // max time to run optimization
 
-function plotter() {
+function plotter(erase) {
+  if (erase) {
+      svg.remove();
+  }
 
   /* Value of f at (x, y) */
   func = document.getElementById("func").value.toString()
@@ -57,6 +60,7 @@ function plotter() {
   .append("svg")
   .attr("width", width)
   .attr("height", height);
+
 
   function_g = svg.append("g").on("mousedown", mousedown)
   gradient_path_g = svg.append("g")
@@ -307,5 +311,3 @@ function draw_path(path_data, type) {
 }
 
 plotter(false)
-
-

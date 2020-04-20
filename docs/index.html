@@ -20,76 +20,26 @@
 
 </head>
 <!-- Contour plot. Dont move -->
-<link rel="stylesheet" href="contour_plot.css">
+<link rel="stylesheet" href="css/contour_plot.css">
 <!-- Other sidebar. Moving to CSS file has issues --> 
-<style>
-
-.sidepanel  {
-  width: 0;
-  position: fixed;
-  z-index: 1;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidepanel a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidepanel a:hover {
-  color: #f1f1f1;
-}
-
-.sidepanel .closebtn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-}
-
-.openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-}
-
-.openbtn:hover {
-  background-color:#444;
-}
-</style>
-
+<link rel="stylesheet" href="css/sidebar.css">
 <body>
   <div id="mySidepanel" class="sidepanel">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-         <label for="func"> Function: </label>
-                <input type="text" id="func" name="func" value="x^2 + y^2">
-                <br>
-                <label for="xmin"> X min: </label>
-                <input type="text" id="xmin" name="xmin" value="-10">
+    <a href="javascript:void(0)" class="closebtn" onclick="Nav()">&times;</a>
+    <label for="func"> Function: </label>
+    <input type="text" id="func" name="func" value="x^2 + y^2">
 
-                <label for="ymin"> Y min: </label>
-                <input type="text" id="ymin" name="ymin" value="-10">
+    <label for="xmin"> X min: </label>
+    <input type="text" id="xmin" name="xmin" value="-10">
+    <label for="ymin"> Y min: </label>
+    <input type="text" id="ymin" name="ymin" value="-10">
+    <label for="xmax"> X max: </label>
+    <input type="text" id="xmax" name="xmax" value="10">
+    <label for="ymax"> Y max: </label>
+    <input type="text" id="ymax" name="ymax" value="10">
 
-                <label for="xmax"> X max: </label>
-                <input type="text" id="xmax" name="xmax" value="10">
+    <button onclick="plotter(true)">Submit</button>
 
-                <label for="ymax"> Y max: </label>
-                <input type="text" id="ymax" name="ymax" value="10">
-
-                <button onclick="plotter(true)">Submit</button>
     <a href="#">About</a>
     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
     <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -104,36 +54,60 @@
       </li>
     </ul>
   </div>
-  <button class="openbtn" onclick="openNav()">&#9776; Toggle Sidepanel</button>
-  <br>
-
+  <button class="openbtn" onclick="Nav()">&#9776; Sidepanel</button>
+  <!-- Sidepanel -->
   <script>
-  function openNav() {
-   document.getElementById("mySidepanel").style.width = "250px";
-  }
+    function Nav() {
+      var open = parseFloat(document.getElementById("mySidepanel").style.width)
+      console.log(open)
+      if (open) {closeNav()
+      } else {
+        openNav()
+      }
+    }
+    function openNav() {
+      document.getElementById("mySidepanel").style.width = "250px";
+    }
 
-  function closeNav() {
-    document.getElementById("mySidepanel").style.width = "0";
-  }
+    function closeNav() {
+      document.getElementById("mySidepanel").style.width = "0";
+    }
   </script>
       
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-      <!-- Popper.JS -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-      <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-      <!-- jQuery Custom Scroller CDN -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+  <!-- jQuery Custom Scroller CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
-      <!-- D3 -->
-      <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- D3 -->
+  <script src="https://d3js.org/d3.v5.min.js"></script>
 
-      <!-- D3 -->
-      <script src="https://d3js.org/d3-contour.v1.min.js"></script>
-      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <!-- D3 Contour plot-->
+  <script src="https://d3js.org/d3-contour.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-      <script src="script/sidebar.js"></script>
-      <script src="script/plot_v1.js"></script>
+  <!-- 3D plot -->
+  <script src="https://unpkg.com/d3-3d/build/d3-3d.min.js"></script>
 
+  <script src="script/sidebar.js"></script>
+  <script src="script/plot_v1.js"></script>
+  <script src="script/3d.js"></script>
+  <script>
+    plotter(false)
+    function plotter(erase) {
+      if (erase) {
+        d3.selectAll("g > *").remove()
+        svg.remove();
+      }
+      plot_contour();
+      //plot_3d();
+  }
+  </script>
 </body>
+</body>
+
+

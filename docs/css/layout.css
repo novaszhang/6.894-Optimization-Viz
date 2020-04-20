@@ -20,4 +20,9 @@ a, a:hover, a:focus {
     transition: all 0.3s;
 }
 
-/* Side bar https://www.w3schools.com/howto/howto_js_collapse_sidepanel.asp */
+button {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+

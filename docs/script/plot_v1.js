@@ -173,10 +173,13 @@ var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
  * SGD, Momentum, RMSProp, Adam.
  */
 
- function get_sgd_path(x0, y0, learning_rate, num_steps) {
+ function get_sgd_path(x0, y0, learning_rate) {
   var sgd_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
   var x1, y1, gradient;
-  for (i = 0; i < num_steps; i++) {
+  var x1 = 0;
+  var y1 = 0; 
+  var gradient = [1,1];
+  while (math.norm(gradient) > 1e-2) {
     gradient = grad_f(x0, y0, grad_x, grad_y);
     x1 = x0 - learning_rate * gradient[0]
     y1 = y0 - learning_rate * gradient[1]
@@ -187,12 +190,15 @@ var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
   return sgd_history;
 }
 
-function get_momentum_path(x0, y0, learning_rate, num_steps, momentum) {
+function get_momentum_path(x0, y0, learning_rate, momentum) {
   var v_x = 0,
   v_y = 0;
   var momentum_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-  var x1, y1, gradient;
-  for (i=0; i < num_steps; i++) {
+  var x1 = 0;
+  var y1 = 0; 
+  var gradient = [1,1];
+  while (math.norm(gradient) > 1e-2) {
+  //for (i=0; i < num_steps; i++) {
     gradient = grad_f(x0, y0, grad_x, grad_y)
     v_x = momentum * v_x - learning_rate * gradient[0]
     v_y = momentum * v_y - learning_rate * gradient[1]
@@ -205,12 +211,14 @@ function get_momentum_path(x0, y0, learning_rate, num_steps, momentum) {
   return momentum_history
 }
 
-function get_rmsprop_path(x0, y0, learning_rate, num_steps, decay_rate, eps) {
+function get_rmsprop_path(x0, y0, learning_rate, decay_rate, eps) {
   var cache_x = 0,
   cache_y = 0;
   var rmsprop_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-  var x1, y1, gradient;
-  for (i = 0; i < num_steps; i++) {
+  var x1 = 0;
+  var y1 = 0; 
+  var gradient = [1,1];
+  while (math.norm(gradient) > 1e-2) {
     gradient = grad_f(x0, y0, grad_x, grad_y)
     cache_x = decay_rate * cache_x + (1 - decay_rate) * gradient[0] * gradient[0]
     cache_y = decay_rate * cache_y + (1 - decay_rate) * gradient[1] * gradient[1]
@@ -223,21 +231,24 @@ function get_rmsprop_path(x0, y0, learning_rate, num_steps, decay_rate, eps) {
   return rmsprop_history;
 }
 
-function get_adam_path(x0, y0, learning_rate, num_steps, beta_1, beta_2, eps) {
+function get_adam_path(x0, y0, lr, beta_1, beta_2, eps) {
   var m_x = 0,
   m_y = 0,
   v_x = 0,
   v_y = 0;
   var adam_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-  var x1, y1, gradient;
-  for (i = 0; i < num_steps; i++) {
+  var x1 = 0;
+  var y1 = 0; 
+  var gradient = [1,1];
+  while (math.norm(gradient) > 1e-2) {
+ // for (i = 0; i < num_steps; i++) {
     gradient = grad_f(x0, y0, grad_x, grad_y)
     m_x = beta_1 * m_x + (1 - beta_1) * gradient[0]
     m_y = beta_1 * m_y + (1 - beta_1) * gradient[1]
     v_x = beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0]
     v_y = beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1]
-    x1 = x0 - learning_rate * m_x / (Math.sqrt(v_x) + eps)
-    y1 = y0 - learning_rate * m_y / (Math.sqrt(v_y) + eps)
+    x1 = x0 - lr * m_x / (Math.sqrt(v_x) + eps)
+    y1 = y0 - lr * m_y / (Math.sqrt(v_y) + eps)
     adam_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
     x0 = x1
     y0 = y1
@@ -260,19 +271,19 @@ function minimize(x0,y0) {
   gradient_path_g.selectAll("path").remove();
 
   if (draw_bool.SGD) {
-    var sgd_data = get_sgd_path(x0, y0, 2e-2, 500);
+    var sgd_data = get_sgd_path(x0, y0, 2e-2);
     draw_path(sgd_data, "sgd");
   }
   if (draw_bool.Momentum) {
-    var momentum_data = get_momentum_path(x0, y0, 1e-2, 200, 0.8);
+    var momentum_data = get_momentum_path(x0, y0, 1e-2, 0.8);
     draw_path(momentum_data, "momentum");
   }
   if (draw_bool.RMSProp) {
-    var rmsprop_data = get_rmsprop_path(x0, y0, 1e-2, 300, 0.99, 1e-6);
+    var rmsprop_data = get_rmsprop_path(x0, y0, 1e-2, 0.99, 1e-6);
     draw_path(rmsprop_data, "rmsprop");
   }
   if (draw_bool.Adam) {
-    var adam_data = get_adam_path(x0, y0, 1e-2, 100, 0.7, 0.999, 1e-6);
+    var adam_data = get_adam_path(x0, y0, 1e-2, 0.7, 0.999, 1e-6);
     draw_path(adam_data, "adam");
   }
 }

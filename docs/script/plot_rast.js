@@ -35,19 +35,16 @@ var function_g = svg.append("g").on("mousedown", mousedown),
     menu_g = svg.append("g");
 
 
-//function: Quad Bowl
 function f(x, y) {
-    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
+  return .2 * (Math.sin(10 * x - Math.PI / 2) + Math.sin(10 * y - Math.PI / 2)) + Math.pow(x, 2) + Math.pow(y, 2);
 }
 
 /* Returns gradient of f at (x, y) */
-function grad_f(x,y) {
-    var grad_x = (f(x + h, y) - f(x, y)) / h
-        grad_y = (f(x, y + h) - f(x, y)) / h
-    return [grad_x, grad_y];
+function grad_f(x, y) {
+  var grad_x = (f(x + h, y) - f(x, y)) / h,
+      grad_y = (f(x, y + h) - f(x, y)) / h;
+  return [grad_x, grad_y];
 }
-
-
 /* Returns values of f(x,y) at each point on grid as 1 dim array. */
 function get_f_values(nx, ny) {
     var grid = new Array(nx * ny);

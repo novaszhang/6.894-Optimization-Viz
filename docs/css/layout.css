@@ -93,7 +93,7 @@ ul ul a {
 
 #content {
     width: calc(100% - 250px);
-    padding: 40px;
+    padding: 0px;
     min-height: 100vh;
     transition: all 0.3s;
     position: absolute;
@@ -125,69 +125,4 @@ ul ul a {
     #sidebarCollapse span {
         display: none;
     }
-}
-
-/* ---------------------------------------------------
-    Contour plot
------------------------------------------------------ */
-
-.svg-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%; /* aspect ratio */
-  vertical-align: top;
-  overflow: hidden;
-}
-.svg-content-responsive {
-  display: inline-block;
-  position: absolute;
-  top: 10px;
-  left: 0;
-}
-
-svg .rect {
-  fill: gold;
-  stroke: steelblue;
-  stroke-width: 5px;
-}
-
-
-
-
-
-.sgd {
-    stroke: red;
-}
-
-.momentum {
-    stroke: orange;
-}
-
-.rmsprop {
-    stroke: blue;
-}
-
-.adam {
-    stroke: green;
-}
-
-.SGD {
-    fill: red;
-}
-
-.Momentum {
-    fill: orange;
-}
-
-.RMSProp {
-    fill: blue;
-}
-
-.Adam {
-    fill: green;
-}
-
-circle:hover {
-  fill-opacity: .3;
 }

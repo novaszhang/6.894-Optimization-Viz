@@ -20,28 +20,27 @@
 		    <nav id="sidebar">
 		       
 				<div class="sidebar-header">
-		            <h3>Gaussian "Bowl"</h3>
+		            <h3>Custom</h3>
 		        </div>
 		        <ul class="list-unstyled components" style="padding-left: 5px">
-		            <!--<p>Enter function here </p>-->
-		            <!-- Function:
-		            <div class="form-check">
-					  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-					  <label class="form-check-label" for="exampleRadios1">
-					    Default radio
-					  </label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-						<label class="form-check-label" for="exampleRadios2">
-						    Second default radio
-						</label>
-					</div> -->
-
-		            <!-- <button onclick="get_val()" class="btn btn-light">Submit</button> -->
+		            <!-- Function: -->
+		            <label for="func"> Function: </label>
+		            <input type="text" id="func" name="func" size="18" value="sin(x^2) + cos(y)">
+		            <br>
+		            <label for="xmin"> X min &nbsp;</label>
+		            <input type="text" id="xmin" name="xmin" size="2" value="-3">
+		            <label for="ymin"> &nbsp;&nbsp;&nbsp;Y min </label>
+		            <input type="text" id="ymin" name="ymin" size="2" value="-5">
+		            <br>
+		            <label for="xmax"> X max </label>
+		            <input type="text" id="xmax" name="xmax" size="2" value="3">
+		            <label for="ymax"> &nbsp;&nbsp;&nbsp;Y max </label>
+		            <input type="text" id="ymax" name="ymax" size="2" value="5">
+		            <br>
+		            <button onclick="plotter(true)">Submit</button>
 
 		            <li class="active">
-		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Functions</a>
+		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Function</a>
 		                <ul class="collapse list-unstyled" id="homeSubmenu">
 		                    <li>
 		                        <a href="index.html">Gaussian "Bowl"</a>
@@ -52,37 +51,29 @@
 		                    <li>
 		                        <a href="rosen.html">Rosenbrock</a>
 		                    </li>
-		                    <li>
-		                  		<a href="custom.html">Custom</a>
-		                  	</li>
 		                </ul>
 		            </li>
 		            <li class="active">
 		                <a href="#LRSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Learning Rates</a>
 		                <ul class="collapse list-unstyled" id="LRSubmenu" style="padding-left: 5px">
 		                    <li>
-		                       	<label for="SGD_lr"> SGD </label><br>
-		            			<input type="text" id="SGD_lr" name="SGD_lr" value="2e-2">
+		                       	<label for="SGD_lr"> SGD </label>
+		            			<input type="text" id="SGD_lr" name="SGD_lr" size="4" value="2e-2">
 		                    </li>
 		                    <li>
 		                        <label for="moment_lr"> Momentum </label>
-		            			<input type="text" id="moment_lr" name="moment_lr" value="2e-2">
+		            			<input type="text" id="moment_lr" name="moment_lr"  size="4" value="2e-2">
 		                    </li>
 		                    <li>
 		                        <label for="rms_lr"> RMSProp </label>
-		            			<input type="text" id="rms_lr" name="rms_lr" value="2e-2">
+		            			<input type="text" id="rms_lr" name="rms_lr" size="4" value="2e-2">
 		                    </li>
 		                    <li>
 		                        <label for="adam_lr"> Adam </label>
-		            			<input type="text" id="adam_lr" name="adam_lr" value="2e-2">
+		            			<input type="text" id="adam_lr" name="adam_lr" size="4" value="2e-2">
 		                    </li>
 		                </ul>
 		            </li>
-		            
-		         <!--    <li>
-		                <a href="#">About</a>
-		            </li>
-		             -->
 		        </ul>
 
 		    </nav>
@@ -114,8 +105,21 @@
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/d3-contour.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+	<!-- Math for evaluating functions -->
+    <script src="https://unpkg.com/mathjs@6.6.2/dist/math.min.js"></script>
 
-	<script src="script/plot.js"></script>
+	<script src="script/plot_custom.js"></script>
 	<script src="script/sidebar.js"></script>
+	<script>
+    plotter(false)
+    function plotter(erase) {
+      if (erase) {
+        d3.selectAll("g > *").remove()
+        svg.remove();
+      }
+      plot_contour();
+      //plot_3d();
+  }
+  </script>	
 </body>
 </html>

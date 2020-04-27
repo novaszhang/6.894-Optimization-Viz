@@ -35,7 +35,6 @@ var function_g = svg.append("g").on("mousedown", mousedown),
     menu_g = svg.append("g");
 
 
-//function: Quad Bowl
 function f(x, y) {
     return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
 }

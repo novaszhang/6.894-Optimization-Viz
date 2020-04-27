@@ -1,57 +1,11 @@
-
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-.sgd {
-    stroke: red;
-}
-
-.momentum {
-    stroke: orange;
-}
-
-.rmsprop {
-    stroke: blue;
-}
-
-.adam {
-    stroke: green;
-}
-
-.SGD {
-    fill: red;
-}
-
-.Momentum {
-    fill: orange;
-}
-
-.RMSProp {
-    fill: blue;
-}
-
-.Adam {
-    fill: green;
-}
-
-circle:hover {
-  fill-opacity: .3;
-}
-</style>
-<body>
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="https://d3js.org/d3-contour.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script>
-
-var width = window.innerWidth,
-    height = window.innerHeight,
+var width = window.innerWidth-10,
+    height = window.innerHeight-10,
     nx = parseInt(width / 5), // grid sizes
     ny = parseInt(height / 5),
     h = 1e-7, // step used when approximating gradients
     drawing_time = 30; // max time to run optimization
 
-var svg = d3.select("body")
+var svg = d3.select("#descentViz")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -80,20 +34,17 @@ var function_g = svg.append("g").on("mousedown", mousedown),
     gradient_path_g = svg.append("g"),
     menu_g = svg.append("g");
 
-/*
- * Set up the function and gradients
- */
 
-/* Value of f at (x, y) */
 function f(x, y) {
-    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
-}
+    // Rosenbrock function, a = 1, b = 2
+    return Math.pow(1 - x, 2) + 2 * Math.pow(y - x * x, 2);
+  }
 
-/* Returns gradient of f at (x, y) */
-function grad_f(x,y) {
-    var grad_x = (f(x + h, y) - f(x, y)) / h
-        grad_y = (f(x, y + h) - f(x, y)) / h
-    return [grad_x, grad_y];
+  /* Returns gradient of f at (x, y) */
+function grad_f(x, y) {
+  var grad_x = (f(x + h, y) - f(x, y)) / h,
+      grad_y = (f(x, y + h) - f(x, y)) / h;
+  return [grad_x, grad_y];
 }
 
 
@@ -304,28 +255,42 @@ function mousedown() {
     /* Get initial point */
     var point = d3.mouse(this);
     /* Minimize and draw paths */
-    minimize(scale_x(point[0]), scale_y(point[1]));
+    var sgd_lr = document.getElementById("SGD_lr").value;
+    var mom_lr = document.getElementById("moment_lr").value;
+    var rms_lr = document.getElementById("rms_lr").value;
+    var adam_lr = document.getElementById("adam_lr").value;
+    minimize(
+      scale_x(point[0]),
+       scale_y(point[1]),
+       sgd_lr,
+       mom_lr,
+       rms_lr,
+       adam_lr);
 }
 
-function minimize(x0,y0) {
+function minimize(
+      x0,
+      y0, 
+      sgd_lr,
+       mom_lr,
+       rms_lr,
+       adam_lr) {
     gradient_path_g.selectAll("path").remove();
 
     if (draw_bool.SGD) {
-        var sgd_data = get_sgd_path(x0, y0, 2e-2, 500);
+        var sgd_data = get_sgd_path(x0, y0, sgd_lr, 500);
         draw_path(sgd_data, "sgd");
     }
     if (draw_bool.Momentum) {
-        var momentum_data = get_momentum_path(x0, y0, 1e-2, 200, 0.8);
+        var momentum_data = get_momentum_path(x0, y0, mom_lr, 200, 0.8);
         draw_path(momentum_data, "momentum");
     }
     if (draw_bool.RMSProp) {
-        var rmsprop_data = get_rmsprop_path(x0, y0, 1e-2, 300, 0.99, 1e-6);
+        var rmsprop_data = get_rmsprop_path(x0, y0, rms_lr, 300, 0.99, 1e-6);
         draw_path(rmsprop_data, "rmsprop");
     }
     if (draw_bool.Adam) {
-        var adam_data = get_adam_path(x0, y0, 1e-2, 100, 0.7, 0.999, 1e-6);
+        var adam_data = get_adam_path(x0, y0, adam_lr, 100, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
     }
 }
-
-</script>

@@ -29,8 +29,9 @@ var func,
 function plot_contour() {
   /* Value of f at (x, y) */
   func = document.getElementById("func").value.toString()
-  grad_x = math.derivative(func, 'x')
-  grad_y = math.derivative(func, 'y')
+  grad_x = math.derivative(func, 'x').toString()
+  grad_y = math.derivative(func, 'y').toString()
+  console.log(grad_x)
 
   // Parameters describing where function is defined
   domain_x = [document.getElementById("xmin").value, document.getElementById("xmax").value]

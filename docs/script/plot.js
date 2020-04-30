@@ -1,5 +1,5 @@
-var width = window.innerWidth-10,
-    height = window.innerHeight-10,
+var width = window.innerWidth,
+    height = window.innerHeight,
     nx = parseInt(width / 5), // grid sizes
     ny = parseInt(height / 5),
     h = 1e-7, // step used when approximating gradients
@@ -88,18 +88,19 @@ var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
 
 menu_g.append("rect")
       .attr("x", 0)
-      .attr("y", height - 40)
+      .attr("y", 0)
       .attr("width", width)
       .attr("height", 40)
-      .attr("fill", "white")
-      .attr("opacity", 0.2);
+      .attr("fill", "black")
+      .attr("opacity", 0.6);
+
 
 menu_g.selectAll("circle")
       .data(buttons)
       .enter()
       .append("circle")
-      .attr("cx", function(d,i) { return width/4 * (i + 0.25);} )
-      .attr("cy", height - 20)
+      .attr("cx", function(d,i) { return width/6 * (i + 1);} )
+      .attr("cy", 15)
       .attr("r", 10)
       .attr("stroke-width", 0.5)
       .attr("stroke", "black")
@@ -112,8 +113,8 @@ menu_g.selectAll("text")
       .data(buttons)
       .enter()
       .append("text")
-      .attr("x", function(d,i) { return width/4 * (i + 0.25) + 18;} )
-      .attr("y", height - 14)
+      .attr("x", function(d,i) { return width/6 * (i + 1) + 18;} )
+      .attr("y", 20)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
       .attr("font-family", "Helvetica Neue")

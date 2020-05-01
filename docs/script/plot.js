@@ -100,21 +100,25 @@ menu_g.selectAll("circle")
       .enter()
       .append("circle")
       .attr("cx", function(d,i) { return width/6 * (i + 1);} )
-      .attr("cy", 15)
+      .attr("cy", 18)
       .attr("r", 10)
       .attr("stroke-width", 0.5)
       .attr("stroke", "black")
       .attr("class", function(d) { console.log(d); return d;})
       .attr("fill-opacity", 0.5)
       .attr("stroke-opacity", 1)
-      .on("mousedown", button_press);
+      .on("mousedown", button_press)
+      .on("mouseover", mouseon)
+      .on("mouseout", mouseout)
+      .on("mousemove", mousemove)
+;
 
 menu_g.selectAll("text")
       .data(buttons)
       .enter()
       .append("text")
       .attr("x", function(d,i) { return width/6 * (i + 1) + 18;} )
-      .attr("y", 20)
+      .attr("y", 24)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
       .attr("font-family", "Helvetica Neue")
@@ -122,6 +126,19 @@ menu_g.selectAll("text")
       .attr("font-weight", 200)
       .attr("fill", "white")
       .attr("fill-opacity", 0.8);
+
+ var tooltip = d3
+    .select("body")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+    .style("position", "absolute")
+
 
 function button_press() {
     var type = d3.select(this).attr("class")
@@ -132,6 +149,45 @@ function button_press() {
         d3.select(this).attr("fill-opacity", 0.5)
         draw_bool[type] = true;
     }
+}
+
+function mouseon() {
+  var type = d3.select(this).attr("class")
+  d3.select(this)
+    .attr("r", 14)
+}
+
+function mousemove() {
+  var type = d3.select(this).attr("class")
+  var typetext;
+  if (type == "SGD") {
+    typetext = "Stochastic approximation of gradient"
+
+    } else if (type == "Momentum") {
+    typetext = "Exponentially moving average of current & past gradients"
+
+    } else if (type == "RMSProp") {
+    typetext = "Variation of Momentum"
+
+
+    } else if (type == "Adam") {
+    typetext = "Combines RMSProp & Momentum"
+    }
+  tooltip
+    .style("opacity", 1)
+    .html(typetext)
+    .style("left", (d3.mouse(this)[0]+90) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+    .style("top", (d3.mouse(this)[1]) + "px")
+}
+
+function mouseout() {
+  var type = d3.select(this).attr("class")
+  d3.select(this)
+    .attr("r", 10)
+  tooltip
+    .transition()
+    .duration(200)
+    .style("opacity", 0)
 }
 
 /*

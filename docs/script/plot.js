@@ -86,6 +86,8 @@ var draw_bool = {"SGD" : true, "Momentum" : true, "RMSProp" : true, "Adam" : tru
 
 var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
 
+var iterations = [0,0,0,0]
+
 menu_g.append("rect")
       .attr("x", 0)
       .attr("y", 0)
@@ -118,6 +120,20 @@ menu_g.selectAll("text")
       .enter()
       .append("text")
       .attr("x", function(d,i) { return width/6 * (i + 1) + 18;} )
+      .attr("y", 24)
+      .text(function(d) { return d; })
+      .attr("text-anchor", "start")
+      .attr("font-family", "Helvetica Neue")
+      .attr("font-size", 15)
+      .attr("font-weight", 200)
+      .attr("fill", "white")
+      .attr("fill-opacity", 0.8);
+
+menu_g.selectAll("text.values")
+      .data(iterations)
+      .enter()
+      .append("text")
+      .attr("x", function(d,i) { return width/6 * (i + 1) + 100;} ) 
       .attr("y", 24)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
@@ -195,26 +211,31 @@ function mouseout() {
  * SGD, Momentum, RMSProp, Adam.
  */
 
-function get_sgd_path(x0, y0, learning_rate, num_steps) {
+function get_sgd_path(x0, y0, learning_rate) {
     var sgd_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-    var x1, y1, gradient;
-    for (i = 0; i < num_steps; i++) {
+    var x1, y1;
+    var gradient = [1,1];
+    while (math.norm(gradient) > 1e-6) {
+    //for (i = 0; i < num_steps; i++) {
         gradient = grad_f(x0, y0);
         x1 = x0 - learning_rate * gradient[0]
         y1 = y0 - learning_rate * gradient[1]
         sgd_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
+        iterations[1] = sgd_history.length
+        //console.log(iterations[1])
     }
     return sgd_history;
 }
 
-function get_momentum_path(x0, y0, learning_rate, num_steps, momentum) {
+function get_momentum_path(x0, y0, learning_rate, momentum) {
     var v_x = 0,
         v_y = 0;
     var momentum_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-    var x1, y1, gradient;
-    for (i=0; i < num_steps; i++) {
+    var x1, y1;
+    var gradient = [1,1];
+    while (math.norm(gradient) > 1e-6) {
         gradient = grad_f(x0, y0)
         v_x = momentum * v_x - learning_rate * gradient[0]
         v_y = momentum * v_y - learning_rate * gradient[1]
@@ -227,12 +248,13 @@ function get_momentum_path(x0, y0, learning_rate, num_steps, momentum) {
     return momentum_history
 }
 
-function get_rmsprop_path(x0, y0, learning_rate, num_steps, decay_rate, eps) {
+function get_rmsprop_path(x0, y0, learning_rate, decay_rate, eps) {
     var cache_x = 0,
         cache_y = 0;
     var rmsprop_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-    var x1, y1, gradient;
-    for (i = 0; i < num_steps; i++) {
+    var x1, y1;
+    var gradient = [1,1];
+    while (math.norm(gradient) > 1e-6) {
         gradient = grad_f(x0, y0)
         cache_x = decay_rate * cache_x + (1 - decay_rate) * gradient[0] * gradient[0]
         cache_y = decay_rate * cache_y + (1 - decay_rate) * gradient[1] * gradient[1]
@@ -245,14 +267,15 @@ function get_rmsprop_path(x0, y0, learning_rate, num_steps, decay_rate, eps) {
     return rmsprop_history;
 }
 
-function get_adam_path(x0, y0, learning_rate, num_steps, beta_1, beta_2, eps) {
+function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
     var m_x = 0,
         m_y = 0,
         v_x = 0,
         v_y = 0;
     var adam_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
-    var x1, y1, gradient;
-    for (i = 0; i < num_steps; i++) {
+    var x1, y1;
+    var gradient = [1,1];
+    while (math.norm(gradient) > 1e-6) {
         gradient = grad_f(x0, y0)
         m_x = beta_1 * m_x + (1 - beta_1) * gradient[0]
         m_y = beta_1 * m_y + (1 - beta_1) * gradient[1]
@@ -335,19 +358,20 @@ function minimize(
     gradient_path_g.selectAll("path").remove();
 
     if (draw_bool.SGD) {
-        var sgd_data = get_sgd_path(x0, y0, sgd_lr, 500);
+        var sgd_data = get_sgd_path(x0, y0, sgd_lr);
         draw_path(sgd_data, "sgd");
+
     }
     if (draw_bool.Momentum) {
-        var momentum_data = get_momentum_path(x0, y0, mom_lr, 200, 0.8);
+        var momentum_data = get_momentum_path(x0, y0, mom_lr, 0.8);
         draw_path(momentum_data, "momentum");
     }
     if (draw_bool.RMSProp) {
-        var rmsprop_data = get_rmsprop_path(x0, y0, rms_lr, 300, 0.99, 1e-6);
+        var rmsprop_data = get_rmsprop_path(x0, y0, rms_lr, 0.99, 1e-6);
         draw_path(rmsprop_data, "rmsprop");
     }
     if (draw_bool.Adam) {
-        var adam_data = get_adam_path(x0, y0, adam_lr, 100, 0.7, 0.999, 1e-6);
+        var adam_data = get_adam_path(x0, y0, adam_lr, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
     }
 }

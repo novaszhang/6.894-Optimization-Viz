@@ -86,7 +86,7 @@ var draw_bool = {"SGD" : true, "Momentum" : true, "RMSProp" : true, "Adam" : tru
 
 var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
 
-var iterations = [0,0,0,0]
+var iter_count = [0,0,0,0]
 
 menu_g.append("rect")
       .attr("x", 0)
@@ -129,14 +129,17 @@ menu_g.selectAll("text")
       .attr("fill", "white")
       .attr("fill-opacity", 0.8);
 
-menu_g.selectAll("text.values")
-      .data(iterations)
+var itc = ["Iteration counter"]
+
+menu_g.selectAll(".text")
+      .data(itc)
       .enter()
       .append("text")
-      .attr("x", function(d,i) { return width/6 * (i + 1) + 100;} ) 
+      .attr("x", function(d,i) { return width/6 - 200;} )
       .attr("y", 24)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
+      .style("fill", "orange")
       .attr("font-family", "Helvetica Neue")
       .attr("font-size", 15)
       .attr("font-weight", 200)
@@ -155,6 +158,34 @@ menu_g.selectAll("text.values")
     .style("padding", "10px")
     .style("position", "absolute")
 
+
+//Update for iteration counter
+function update(data) {
+
+  var text = menu_g.selectAll(".values")
+      .data(iter_count)
+
+  text.remove();
+
+  text
+      .enter()
+      .append("text")
+      .attr("class", "values")
+      .attr("x", function(d,i) { return width/6 * (i + 1) + 100;} ) 
+      .attr("y", 24)
+      .text(function(d) { return d; })
+      .style("fill", "orange")
+      .attr("text-anchor", "start")
+      .attr("font-family", "Helvetica Neue")
+      .attr("font-size", 15)
+      .attr("font-weight", 200)
+      .attr("fill", "white")
+      .attr("fill-opacity", 0.8);
+  
+  text.text(function(d) {
+    return d;
+  });
+}
 
 function button_press() {
     var type = d3.select(this).attr("class")
@@ -223,8 +254,7 @@ function get_sgd_path(x0, y0, learning_rate) {
         sgd_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
-        iterations[1] = sgd_history.length
-        //console.log(iterations[1])
+        iter_count[0]++
     }
     return sgd_history;
 }
@@ -244,6 +274,7 @@ function get_momentum_path(x0, y0, learning_rate, momentum) {
         momentum_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
+        iter_count[1]++
     }
     return momentum_history
 }
@@ -263,6 +294,7 @@ function get_rmsprop_path(x0, y0, learning_rate, decay_rate, eps) {
         rmsprop_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
+        iter_count[2]++
     }
     return rmsprop_history;
 }
@@ -286,6 +318,7 @@ function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
         adam_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
+        iter_count[3]++
     }
     return adam_history;
 }
@@ -356,6 +389,7 @@ function minimize(
        rms_lr,
        adam_lr) {
     gradient_path_g.selectAll("path").remove();
+    iter_count = [0,0,0,0]
 
     if (draw_bool.SGD) {
         var sgd_data = get_sgd_path(x0, y0, sgd_lr);
@@ -374,4 +408,9 @@ function minimize(
         var adam_data = get_adam_path(x0, y0, adam_lr, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
     }
+
 }
+
+setInterval(function() {
+  update(iter_count);
+}, 1000);

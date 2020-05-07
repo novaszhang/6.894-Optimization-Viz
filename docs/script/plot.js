@@ -144,7 +144,8 @@ menu_g.selectAll(".text")
       .attr("font-size", 15)
       .attr("font-weight", 200)
       .attr("fill", "white")
-      .attr("fill-opacity", 0.8);
+      .attr("fill-opacity", 0.8)
+      .on("mousedown", show_graph)
 
  var tooltip = d3
     .select("body")
@@ -390,11 +391,11 @@ function minimize(
        adam_lr) {
     gradient_path_g.selectAll("path").remove();
     iter_count = [0,0,0,0]
+    menu_g.selectAll("bar").remove()
 
     if (draw_bool.SGD) {
         var sgd_data = get_sgd_path(x0, y0, sgd_lr);
         draw_path(sgd_data, "sgd");
-
     }
     if (draw_bool.Momentum) {
         var momentum_data = get_momentum_path(x0, y0, mom_lr, 0.8);
@@ -408,7 +409,53 @@ function minimize(
         var adam_data = get_adam_path(x0, y0, adam_lr, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
     }
+    graph_iter()
+}
 
+
+function zip(arrays) {
+    return arrays[0].map(function(_,i){
+        return arrays.map(function(array){return array[i]})
+    });
+}
+
+function graph_iter() {
+  var data = zip([buttons, iter_count])
+
+  var x = d3.scaleBand()
+  .rangeRound([0, width/5])
+  .padding(0.1);
+
+  var y = d3.scaleLinear()
+  .rangeRound([height/5, 0]);
+
+  console.log(data)
+
+  menu_g
+  .selectAll("bar")
+  .data(data)
+  .enter()
+  .append("bar")
+  .transition()
+  .attr("class", "bar")
+    .attr("x", (d, i) => x(i))
+    .attr("y", d => y(d.value))
+    .attr("height", d => y(0) - y(d.value))
+    .attr("width", x.bandwidth())
+    .attr("fill-opacity", 1)
+    .attr("opacity", 0);
+}
+
+var no_graph = true;
+
+function show_graph() {
+    if (no_graph) {
+        no_graph = false
+        d3.selectAll("bar").attr("fill-opacity", 1)
+    } else {
+        no_graph = true
+        d3.selectAll("bar").attr("fill-opacity", 0)
+    }
 }
 
 setInterval(function() {

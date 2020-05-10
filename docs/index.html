@@ -126,7 +126,12 @@
 	<script src="https://d3js.org/d3-contour.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 	<script src="https://unpkg.com/mathjs@6.6.5/dist/math.min.js"></script>
-
+	<script>
+	//function: Quad Bowl
+function f(x, y) {
+    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
+}
+</script>
 	<script src="script/sidebar.js"></script>
 	<script src="script/plot.js"></script>
 </body>

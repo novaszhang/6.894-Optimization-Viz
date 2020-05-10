@@ -10,6 +10,60 @@ var svg = d3.select("#descentViz")
             .attr("width", width)
             .attr("height", height);
 
+
+function display_g() {
+
+  var counts = iter_count.map(x => x.value)
+
+  //Set up x, y scale
+  var x = d3.scaleBand()
+  .rangeRound([0, width/5])
+  .padding(0.1)
+  .domain(iter_count.map(x => x.key));
+
+  var y = d3.scaleLinear()
+  .rangeRound([height/5, 0])
+  .domain([0, d3.max(iter_count, d => d.value)])
+
+  svg.selectAll("rect.barchart")
+  .data(iter_count)
+  .enter()
+  .append("rect")
+  .attr("class", "barchart")
+  .attr("height", function(d) { return height/5 - y(d.value); })
+  .attr("width", x.bandwidth())
+  .attr("x", function(d) { return x(d.key); })
+  .attr("y", function(d) { return y(d.value); })
+  .attr("fill", "white")
+  .attr("stroke-width", 0.5)
+  .attr("stroke", "black")
+  .attr("fill", function(d){return colorPicker(d);})
+  .attr("fill-opacity", 0.5)
+  .attr("transform", 
+          "translate(" + 30 + "," + 50 + ")");
+
+  var xAxis = d3.axisBottom(x)
+
+  svg.append("g")
+  .attr("class", "barchart")
+  .attr("transform", 
+          "translate(" + 30 + "," + (50+height/5) + ")")
+  .call(xAxis);
+
+  svg.append("g")
+  .attr("class", "barchart")
+  .attr("transform", 
+          "translate(" + 30 + "," + 50 + ")")
+  .call(d3.axisLeft(y));
+}
+
+function colorPicker(d) {
+  if (d.key == "SGD") {return "red"; }
+  else if (d.key == "Momentum") {return "orange"; }
+  else if (d.key == "RMSProp") {return "blue"; }
+  else if (d.key == "Adam") {return "green"; }
+}
+
 // Parameters describing where function is defined
 var domain_x = [-2, 2],
     domain_y = [-2, 2],
@@ -77,7 +131,8 @@ function_g.selectAll("path")
           .enter().append("path")
           .attr("d", d3.geoPath(d3.geoIdentity().scale(width / nx)))
           .attr("fill", function(d) { return color_scale(d.value); })
-          .attr("stroke", "none");
+          .attr("stroke", "none")
+          .style("opacity", 1);
 
 /*
  * Set up buttons
@@ -86,7 +141,12 @@ var draw_bool = {"SGD" : true, "Momentum" : true, "RMSProp" : true, "Adam" : tru
 
 var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
 
-var iter_count = [0,0,0,0]
+var iter_count = [
+      {key:"SGD", value:0},
+      {key:"Momentum", value:0},
+      {key:"RMSProp", value:0},
+      {key:"Adam", value:0},
+    ];
 
 menu_g.append("rect")
       .attr("x", 0)
@@ -145,7 +205,7 @@ menu_g.selectAll(".text")
       .attr("font-weight", 200)
       .attr("fill", "white")
       .attr("fill-opacity", 0.8)
-      .on("mousedown", show_graph)
+      .on("mousedown", display_g)
 
  var tooltip = d3
     .select("body")
@@ -159,12 +219,12 @@ menu_g.selectAll(".text")
     .style("padding", "10px")
     .style("position", "absolute")
 
-
 //Update for iteration counter
-function update(data) {
+function update() {
+  var data = iter_count.map(x => x.value);
 
   var text = menu_g.selectAll(".values")
-      .data(iter_count)
+      .data(data)
 
   text.remove();
 
@@ -187,6 +247,10 @@ function update(data) {
     return d;
   });
 }
+
+setInterval(function() {
+  update()
+}, 1000);
 
 function button_press() {
     var type = d3.select(this).attr("class")
@@ -255,7 +319,7 @@ function get_sgd_path(x0, y0, learning_rate) {
         sgd_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
-        iter_count[0]++
+        iter_count[0].value++
     }
     return sgd_history;
 }
@@ -275,7 +339,7 @@ function get_momentum_path(x0, y0, learning_rate, momentum) {
         momentum_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
-        iter_count[1]++
+        iter_count[1].value++
     }
     return momentum_history
 }
@@ -295,7 +359,7 @@ function get_rmsprop_path(x0, y0, learning_rate, decay_rate, eps) {
         rmsprop_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
-        iter_count[2]++
+        iter_count[2].value++
     }
     return rmsprop_history;
 }
@@ -319,7 +383,7 @@ function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
         adam_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
-        iter_count[3]++
+        iter_count[3].value++
     }
     return adam_history;
 }
@@ -382,6 +446,16 @@ function mousedown() {
        adam_lr);
 }
 
+function refresh () {
+  gradient_path_g.selectAll("path").remove();
+  svg.selectAll(".barchart").remove();
+  iter_count = [
+      {key:"SGD", value:0},
+      {key:"Momentum", value:0},
+      {key:"RMSProp", value:0},
+      {key:"Adam", value:0},
+    ];
+}
 function minimize(
       x0,
       y0, 
@@ -389,9 +463,7 @@ function minimize(
        mom_lr,
        rms_lr,
        adam_lr) {
-    gradient_path_g.selectAll("path").remove();
-    iter_count = [0,0,0,0]
-    menu_g.selectAll("bar").remove()
+    refresh()
 
     if (draw_bool.SGD) {
         var sgd_data = get_sgd_path(x0, y0, sgd_lr);
@@ -409,55 +481,4 @@ function minimize(
         var adam_data = get_adam_path(x0, y0, adam_lr, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
     }
-    graph_iter()
 }
-
-
-function zip(arrays) {
-    return arrays[0].map(function(_,i){
-        return arrays.map(function(array){return array[i]})
-    });
-}
-
-function graph_iter() {
-  var data = zip([buttons, iter_count])
-
-  var x = d3.scaleBand()
-  .rangeRound([0, width/5])
-  .padding(0.1);
-
-  var y = d3.scaleLinear()
-  .rangeRound([height/5, 0]);
-
-  console.log(data)
-
-  menu_g
-  .selectAll("bar")
-  .data(data)
-  .enter()
-  .append("bar")
-  .transition()
-  .attr("class", "bar")
-    .attr("x", (d, i) => x(i))
-    .attr("y", d => y(d.value))
-    .attr("height", d => y(0) - y(d.value))
-    .attr("width", x.bandwidth())
-    .attr("fill-opacity", 1)
-    .attr("opacity", 0);
-}
-
-var no_graph = true;
-
-function show_graph() {
-    if (no_graph) {
-        no_graph = false
-        d3.selectAll("bar").attr("fill-opacity", 1)
-    } else {
-        no_graph = true
-        d3.selectAll("bar").attr("fill-opacity", 0)
-    }
-}
-
-setInterval(function() {
-  update(iter_count);
-}, 1000);

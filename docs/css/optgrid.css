@@ -14,6 +14,11 @@
     stroke: green;
 }
 
+.amsgrad {
+	stroke: purple;
+}
+
+
 .SGD {
     fill: red;
 }
@@ -28,6 +33,10 @@
 
 .Adam {
     fill: green;
+}
+
+.AMSgrad {
+	fill: purple;
 }
 
 circle:hover {

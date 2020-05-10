@@ -62,6 +62,7 @@ function colorPicker(d) {
   else if (d.key == "Momentum") {return "orange"; }
   else if (d.key == "RMSProp") {return "blue"; }
   else if (d.key == "Adam") {return "green"; }
+  else if (d.key == "AMSgrad") {return "purple"; }
 }
 
 // Parameters describing where function is defined
@@ -137,15 +138,16 @@ function_g.selectAll("path")
 /*
  * Set up buttons
  */
-var draw_bool = {"SGD" : true, "Momentum" : true, "RMSProp" : true, "Adam" : true};
+var draw_bool = {"SGD" : true, "Momentum" : true, "RMSProp" : true, "Adam" : true, "AMSgrad" : true};
 
-var buttons = ["SGD", "Momentum", "RMSProp", "Adam"];
+var buttons = ["SGD", "Momentum", "RMSProp", "Adam", "AMSgrad"];
 
 var iter_count = [
       {key:"SGD", value:0},
       {key:"Momentum", value:0},
       {key:"RMSProp", value:0},
       {key:"Adam", value:0},
+      {key:"AMSgrad", value:0}
     ];
 
 menu_g.append("rect")
@@ -161,7 +163,7 @@ menu_g.selectAll("circle")
       .data(buttons)
       .enter()
       .append("circle")
-      .attr("cx", function(d,i) { return width/6 * (i + 1);} )
+      .attr("cx", function(d,i) { return width/7 * (i + 1);} )
       .attr("cy", 18)
       .attr("r", 10)
       .attr("stroke-width", 0.5)
@@ -179,7 +181,7 @@ menu_g.selectAll("text")
       .data(buttons)
       .enter()
       .append("text")
-      .attr("x", function(d,i) { return width/6 * (i + 1) + 18;} )
+      .attr("x", function(d,i) { return width/7 * (i + 1) + 18;} )
       .attr("y", 24)
       .text(function(d) { return d; })
       .attr("text-anchor", "start")
@@ -232,7 +234,7 @@ function update() {
       .enter()
       .append("text")
       .attr("class", "values")
-      .attr("x", function(d,i) { return width/6 * (i + 1) + 100;} ) 
+      .attr("x", function(d,i) { return width/7 * (i + 1) + 100;} ) 
       .attr("y", 24)
       .text(function(d) { return d; })
       .style("fill", "orange")
@@ -284,7 +286,11 @@ function mousemove() {
 
     } else if (type == "Adam") {
     typetext = "Combines RMSProp & Momentum"
+
+    } else if (type == "AMSgrad") {
+    typetext = "Variation of Adam (Uses maximum of current & past gradients to update parameters)"
     }
+
   tooltip
     .style("opacity", 1)
     .html(typetext)
@@ -304,7 +310,7 @@ function mouseout() {
 
 /*
  * Set up optimization/gradient descent functions.
- * SGD, Momentum, RMSProp, Adam.
+ * SGD, Momentum, RMSProp, Adam, AMSgrad
  */
 
 function get_sgd_path(x0, y0, learning_rate) {
@@ -374,12 +380,13 @@ function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
     var gradient = [1,1];
     while (math.norm(gradient) > 1e-6) {
         gradient = grad_f(x0, y0)
-        m_x = beta_1 * m_x + (1 - beta_1) * gradient[0]
-        m_y = beta_1 * m_y + (1 - beta_1) * gradient[1]
-        v_x = beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0]
-        v_y = beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1]
+        m_x = (beta_1 * m_x + (1 - beta_1) * gradient[0])///(1-beta_1)
+        m_y = (beta_1 * m_y + (1 - beta_1) * gradient[1])///(1-beta_1)
+        v_x = (beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0])///(1-beta_2)
+        v_y = (beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1])///(1-beta_2)
         x1 = x0 - learning_rate * m_x / (Math.sqrt(v_x) + eps)
         y1 = y0 - learning_rate * m_y / (Math.sqrt(v_y) + eps)
+
         adam_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
         x0 = x1
         y0 = y1
@@ -388,6 +395,41 @@ function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
     return adam_history;
 }
 
+function get_amsgrad_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
+    var m_x = 0,
+        m_y = 0,
+        v_x = 0,
+        v_y = 0;
+    var amsgrad_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
+    var x1, y1;
+    var gradient = [1,1];
+    var prev_v_x = 0;
+    var prev_v_y = 0;
+    while (math.norm(gradient) > 1e-6) {
+        gradient = grad_f(x0, y0)
+
+        prev_v_x = v_x
+        prev_v_y = v_y
+
+        m_x = beta_1 * m_x + (1 - beta_1) * gradient[0]
+        m_y = beta_1 * m_y + (1 - beta_1) * gradient[1]
+
+        v_x = beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0]
+        v_y = beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1]
+
+        v_x = math.max(v_x, prev_v_x)
+        v_y = math.max(v_y, prev_v_y)
+
+        x1 = x0 - learning_rate * m_x / (Math.sqrt(v_x) + eps)
+        y1 = y0 - learning_rate * m_y / (Math.sqrt(v_y) + eps)
+
+        amsgrad_history.push({"x" : scale_x.invert(x1), "y" : scale_y.invert(y1)})
+        x0 = x1
+        y0 = y1
+        iter_count[4].value++
+    }
+    return amsgrad_history;
+}
 
 /*
  * Functions necessary for path visualizations
@@ -437,13 +479,15 @@ function mousedown() {
     var mom_lr = document.getElementById("moment_lr").value;
     var rms_lr = document.getElementById("rms_lr").value;
     var adam_lr = document.getElementById("adam_lr").value;
+    var ams_lr = document.getElementById("ams_lr").value;
     minimize(
       scale_x(point[0]),
        scale_y(point[1]),
        sgd_lr,
        mom_lr,
        rms_lr,
-       adam_lr);
+       adam_lr,
+       ams_lr);
 }
 
 function refresh () {
@@ -454,6 +498,7 @@ function refresh () {
       {key:"Momentum", value:0},
       {key:"RMSProp", value:0},
       {key:"Adam", value:0},
+      {key:"AMSgrad", value:0}
     ];
 }
 function minimize(
@@ -462,7 +507,8 @@ function minimize(
       sgd_lr,
        mom_lr,
        rms_lr,
-       adam_lr) {
+       adam_lr,
+       ams_lr) {
     refresh()
 
     if (draw_bool.SGD) {
@@ -480,5 +526,9 @@ function minimize(
     if (draw_bool.Adam) {
         var adam_data = get_adam_path(x0, y0, adam_lr, 0.7, 0.999, 1e-6);
         draw_path(adam_data, "adam");
+    }
+    if (draw_bool.AMSgrad) {
+        var amsgrad_data = get_amsgrad_path(x0, y0, ams_lr, 0.7, 0.9995, 1e-6);
+        draw_path(amsgrad_data, "amsgrad");
     }
 }

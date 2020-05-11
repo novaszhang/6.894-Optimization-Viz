@@ -25,7 +25,7 @@
 		        <ul class="list-unstyled components" style="padding-left: 5px">
 		            <!-- Function: -->
 		            <label for="func"> Function: </label>
-		            <input type="text" id="func" name="func" size="18" value="sin(x^2)">
+		            <input type="text" id="funcInput" name="func" size="18" value="sin(x^2)">
 		            <br>
 		            <label for="xmin"> X min &nbsp;</label>
 		            <input type="text" id="xmin" name="xmin" size="2" value="-3">
@@ -112,14 +112,7 @@
 	<script src="script/sidebar.js"></script>
 	<script>
     plotter(false)
-    function plotter(erase) {
-      if (erase) {
-        d3.selectAll("g > *").remove()
-        svg.remove();
-      }
-      plot_contour();
-      //plot_3d();
-  }
+    
   </script>	
 </body>
 </html>

@@ -23,8 +23,30 @@
 		            <h3>Rastrigin</h3>
 		        </div>
 		        <ul class="list-unstyled components" style="padding-left: 5px">
+<<<<<<< HEAD
+=======
+		            <!--<p>Enter function here </p>-->
+		            <!-- Function:
+		            <div class="form-check">
+					  <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+					  <label class="form-check-label" for="exampleRadios1">
+					    Default radio
+					  </label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+						<label class="form-check-label" for="exampleRadios2">
+						    Second default radio
+						</label>
+					</div> -->
+
+		            <!-- <button onclick="get_val()" class="btn btn-light">Submit</button> -->
+>>>>>>> cd5c4d9032a12f9a6723ea1d1ef95d3c4fbd6d08
 		            <li class="active">
-		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Function</a>
+		             <a href="about.html"> What is Gradient Descent? </a>
+		             </li>
+		            <li class="active">
+		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Functions</a>
 		                <ul class="collapse list-unstyled" id="homeSubmenu">
 		                    <li>
 		                        <a href="index.html">Gaussian "Bowl"</a>
@@ -34,14 +56,15 @@
 		                    </li>
 		                    <li>
 		                        <a href="rosen.html">Rosenbrock</a>
-							</li>
-							<li>
-								<a href="custom.html">Custom</a>
-							</li>
+		                    </li>
+		                    <li>
+		                  		<a href="custom.html">Custom</a>
+		                  	</li>
 		                </ul>
 		            </li>
+		            <p> Set these parameters </p>
 		            <li class="active">
-		                <a href="#LRSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Learning Rates</a>
+		                <a href="#LRSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Learning Rate</a>
 		                <ul class="collapse list-unstyled" id="LRSubmenu" style="padding-left: 5px">
 		                    <li>
 		                       	<label for="SGD_lr"> SGD </label><br>
@@ -56,31 +79,46 @@
 		            			<input type="text" id="rms_lr" name="rms_lr" value="2e-2">
 		                    </li>
 		                    <li>
-		                        <label for="adam_lr"> Adam </label>
+		                        <label for="adam_lr"> Adam &nbsp; &nbsp; &nbsp; </label>
 		            			<input type="text" id="adam_lr" name="adam_lr" value="2e-2">
+		                    </li>
+		                    <li>
+		                       	<label for="ams_lr"> AMSgrad </label><br>
+		            			<input type="text" id="ams_lr" name="ams_lr" value="2e-2">
 		                    </li>
 		                </ul>
 		            </li>
 		            
+<<<<<<< HEAD
 					<li class="active" style="position:absolute; bottom: 0;">
 						<a href="about.html"> About </a>
 					</li>
+=======
+		         <!--    <li>
+		                <a href="#">About</a>
+		            </li>
+		             -->
+>>>>>>> cd5c4d9032a12f9a6723ea1d1ef95d3c4fbd6d08
 		        </ul>
 
 		    </nav>
 	
 		<div id="content">
-		        <nav class="navbar navbar-expand-lg navbar-light" style="position:fixed;margin-top: 20px">
-		            <div class="container-fluid" style="position:fixed">
+			<div>
+				<p style="font-family:verdana; float:left">&nbsp; &nbsp; &nbsp; Visualizing Gradient Descent Methods &nbsp; &nbsp; &nbsp;</p>
+				<img src="images/contour_plot.png" ALIGN="left" width="50" height="50">
+			</div>
+			<nav class="navbar navbar-expand-lg navbar-light" style="position:relative;margin-top:17px">
+				<div class="container-fluid" style="position:fixed">
 
-		                <button type="button" id="sidebarCollapse" class="btn btn-secondary">
-		                    <i class="fas fa-align-left"></i>
-		                    <span>Options</span>
-		                </button>
-		            </div>
-		        </nav>
-		        <div id="descentViz">
-		    	</div>
+					<button type="button" id="sidebarCollapse" class="btn btn-secondary">
+						<i class="fas fa-align-left"></i>
+						<span>Options</span>
+					</button>
+				</div>
+			</nav>
+			<div id="descentViz">
+			</div>
 		</div>
 	</div>
 	
@@ -96,8 +134,14 @@
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/d3-contour.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
-	<script src="script/plot_rast.js"></script>
+	<script src="https://unpkg.com/mathjs@6.6.5/dist/math.min.js"></script>
+	<script>
+	//function: Quad Bowl
+function f(x, y) {
+  return .2 * (Math.sin(10 * x - Math.PI / 2) + Math.sin(10 * y - Math.PI / 2)) + Math.pow(x, 2) + Math.pow(y, 2);
+}
+</script>
 	<script src="script/sidebar.js"></script>
+	<script src="script/plot.js"></script>
 </body>
 </html>

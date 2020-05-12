@@ -10,7 +10,6 @@ var svg = d3.select("#descentViz")
             .attr("width", width)
             .attr("height", height);
 
-
 function display_g() {
 
   var counts = iter_count.map(x => x.value)
@@ -88,12 +87,6 @@ var color_scale = d3.scaleLinear()
 var function_g = svg.append("g").on("mousedown", mousedown),
     gradient_path_g = svg.append("g"),
     menu_g = svg.append("g");
-
-
-//function: Quad Bowl
-function f(x, y) {
-    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
-}
 
 /* Returns gradient of f at (x, y) */
 function grad_f(x,y) {
@@ -267,6 +260,7 @@ function button_press() {
 
 function mouseon() {
   var type = d3.select(this).attr("class")
+  console.log(type)
   d3.select(this)
     .attr("r", 14)
 }
@@ -283,12 +277,11 @@ function mousemove() {
     } else if (type == "RMSProp") {
     typetext = "Variation of Momentum"
 
-
     } else if (type == "Adam") {
     typetext = "Combines RMSProp & Momentum"
 
     } else if (type == "AMSgrad") {
-    typetext = "Variation of Adam (Uses maximum of current & past gradients to update parameters)"
+    typetext = "Variation of Adam"
     }
 
   tooltip
@@ -317,7 +310,7 @@ function get_sgd_path(x0, y0, learning_rate) {
     var sgd_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1;
     var gradient = [1,1];
-    while (math.norm(gradient) > 1e-6) {
+    while (math.norm(gradient) > 1e-2) {
     //for (i = 0; i < num_steps; i++) {
         gradient = grad_f(x0, y0);
         x1 = x0 - learning_rate * gradient[0]
@@ -336,7 +329,7 @@ function get_momentum_path(x0, y0, learning_rate, momentum) {
     var momentum_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1;
     var gradient = [1,1];
-    while (math.norm(gradient) > 1e-6) {
+    while (math.norm(gradient) > 1e-2) {
         gradient = grad_f(x0, y0)
         v_x = momentum * v_x - learning_rate * gradient[0]
         v_y = momentum * v_y - learning_rate * gradient[1]
@@ -356,7 +349,7 @@ function get_rmsprop_path(x0, y0, learning_rate, decay_rate, eps) {
     var rmsprop_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1;
     var gradient = [1,1];
-    while (math.norm(gradient) > 1e-6) {
+    while (math.norm(gradient) > 1e-2) {
         gradient = grad_f(x0, y0)
         cache_x = decay_rate * cache_x + (1 - decay_rate) * gradient[0] * gradient[0]
         cache_y = decay_rate * cache_y + (1 - decay_rate) * gradient[1] * gradient[1]
@@ -378,12 +371,12 @@ function get_adam_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
     var adam_history = [{"x": scale_x.invert(x0), "y": scale_y.invert(y0)}];
     var x1, y1;
     var gradient = [1,1];
-    while (math.norm(gradient) > 1e-6) {
+    while (math.norm(gradient) > 1e-2) {
         gradient = grad_f(x0, y0)
-        m_x = (beta_1 * m_x + (1 - beta_1) * gradient[0])///(1-beta_1)
-        m_y = (beta_1 * m_y + (1 - beta_1) * gradient[1])///(1-beta_1)
-        v_x = (beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0])///(1-beta_2)
-        v_y = (beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1])///(1-beta_2)
+        m_x = (beta_1 * m_x + (1 - beta_1) * gradient[0])
+        m_y = (beta_1 * m_y + (1 - beta_1) * gradient[1])
+        v_x = (beta_2 * v_x + (1 - beta_2) * gradient[0] * gradient[0])
+        v_y = (beta_2 * v_y + (1 - beta_2) * gradient[1] * gradient[1])
         x1 = x0 - learning_rate * m_x / (Math.sqrt(v_x) + eps)
         y1 = y0 - learning_rate * m_y / (Math.sqrt(v_y) + eps)
 
@@ -405,7 +398,7 @@ function get_amsgrad_path(x0, y0, learning_rate, beta_1, beta_2, eps) {
     var gradient = [1,1];
     var prev_v_x = 0;
     var prev_v_y = 0;
-    while (math.norm(gradient) > 1e-6) {
+    while (math.norm(gradient) > 1e-2) {
         gradient = grad_f(x0, y0)
 
         prev_v_x = v_x

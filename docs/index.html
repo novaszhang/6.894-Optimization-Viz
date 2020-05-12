@@ -46,23 +46,23 @@
 		                <ul class="collapse list-unstyled" id="LRSubmenu" style="padding-left: 5px">
 		                    <li>
 		                       	<label for="SGD_lr"> SGD </label><br>
-		            			<input type="text" id="SGD_lr" name="SGD_lr" value="2e-2">
+		            			<input type="text" id="SGD_lr" name="SGD_lr" value="0.02">
 		                    </li>
 		                    <li>
 		                        <label for="moment_lr"> Momentum </label>
-		            			<input type="text" id="moment_lr" name="moment_lr" value="2e-2">
+		            			<input type="text" id="moment_lr" name="moment_lr" value="0.02">
 		                    </li>
 		                    <li>
 		                        <label for="rms_lr"> RMSProp </label>
-		            			<input type="text" id="rms_lr" name="rms_lr" value="2e-2">
+		            			<input type="text" id="rms_lr" name="rms_lr" value="0.02">
 		                    </li>
 		                    <li>
 		                        <label for="adam_lr"> Adam &nbsp; &nbsp; &nbsp; </label>
-		            			<input type="text" id="adam_lr" name="adam_lr" value="2e-2">
+		            			<input type="text" id="adam_lr" name="adam_lr" value="0.02">
 		                    </li>
 		                    <li>
 		                       	<label for="ams_lr"> AMSgrad </label><br>
-		            			<input type="text" id="ams_lr" name="ams_lr" value="2e-2">
+		            			<input type="text" id="ams_lr" name="ams_lr" value="0.02">
 		                    </li>
 		                </ul>
 		            </li>
@@ -107,7 +107,12 @@
 	<script src="https://d3js.org/d3-contour.v1.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 	<script src="https://unpkg.com/mathjs@6.6.5/dist/math.min.js"></script>
-
+	<script>
+	//function: Quad Bowl
+function f(x, y) {
+    return -2 * Math.exp(-((x - 1) * (x - 1) + y * y) / .2) + -3 * Math.exp(-((x + 1) * (x + 1) + y * y) / .2) + x * x + y * y;
+}
+</script>
 	<script src="script/sidebar.js"></script>
 	<script src="script/plot.js"></script>
 </body>

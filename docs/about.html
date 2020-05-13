@@ -49,7 +49,7 @@
 	
 		<div id="content">
 			<div>
-				<p style="font-family:verdana; float:left">&nbsp; &nbsp; &nbsp; Visualizing Gradient Descent Methods &nbsp; &nbsp; &nbsp;</p>
+				<p style="font-family:verdana; float:left; padding-top:1%">&nbsp; &nbsp; &nbsp; Visualizing Gradient Descent Methods &nbsp; &nbsp; &nbsp;</p>
 				<img src="images/contour_plot.png" ALIGN="left" width="50" height="50">
 			</div>
 			<nav class="navbar navbar-expand-lg navbar-light" style="position:relative;margin-top:17px">
@@ -61,7 +61,28 @@
 					</button>
 				</div>
 			</nav>
-			<div id="descentViz">
+			<br>
+			<div style="padding:5%">
+				<h1>About</h1>
+				<h3>Project Motivation</h3>
+				<p>Descent methods are powerful optimization algorithms that are widely used in machine learning.
+					 Even though such methods are iterative, it is difficult to fully compare the paths different methods take in terms of points 
+					 in space to reach optimal solutions. There are metrics that allow for quantitative comparison, but we believe that 
+					 visualization is a powerful tool for learning. Many of the visualizations currently available are static images,
+					  have low customizability, or are limited in interactiveness.We wanted to see if we could address these issues and 
+					  allow for those learning about descent methods to better understand how these methods vary in effectiveness 
+					  depending on various factors. Specifically, we sought to create a visualization leveraging user interaction to adjust
+					the view and parameters of the optimization alongside animation of steps to show how descent methods arrive at optimal solutions.</p>
+				<hline></hline>
+				<h3>What is Gradient Descent?</h3>
+				<p>Constrained optimization seeks to minimize a cost function within its feature space. From an initialization point, gradient descent algorithms
+					move iteratively in directions according to the descent given until the algorithm converges to a local minimum. 
+					For instance, in machine learning, this underlies the process in which model parameters are updated. We see this
+					 in coefficients for linear regression, and weights and biases in neural networks. The choice of which gradient descent 
+					 method and its hyperparameter values can determine if cost minimization is likely to be achieved in an appropriate amount
+					  of time.</p>
+				<hline></hline>
+				<p>Created By Dao Ming Lee and Nova Zhang</p>
 			</div>
 		</div>
 	</div>

@@ -20,7 +20,7 @@
 		    <nav id="sidebar">
 		       
 				<div class="sidebar-header">
-		            <h3>About</h3>
+		            <h3>Project Page</h3>
 		        </div>
 		        <ul class="list-unstyled components" style="padding-left: 5px">
 		            <li class="active">
@@ -63,26 +63,49 @@
 			</nav>
 			<br>
 			<div style="padding:5%">
-				<h1>About</h1>
-				<h3>Project Motivation</h3>
-				<p>Descent methods are powerful optimization algorithms that are widely used in machine learning.
-					 Even though such methods are iterative, it is difficult to fully compare the paths different methods take in terms of points 
-					 in space to reach optimal solutions. There are metrics that allow for quantitative comparison, but we believe that 
-					 visualization is a powerful tool for learning. Many of the visualizations currently available are static images,
-					  have low customizability, or are limited in interactiveness.We wanted to see if we could address these issues and 
-					  allow for those learning about descent methods to better understand how these methods vary in effectiveness 
-					  depending on various factors. Specifically, we sought to create a visualization leveraging user interaction to adjust
-					the view and parameters of the optimization alongside animation of steps to show how descent methods arrive at optimal solutions.</p>
-				<h3>What is Gradient Descent?</h3>
-				<p>Constrained optimization seeks to minimize a cost function within its feature space. From an initialization point, gradient descent algorithms
-					move iteratively in directions according to the descent given until the algorithm converges to a local minimum. 
-					For instance, in machine learning, this underlies the process in which model parameters are updated. We see this
-					 in coefficients for linear regression, and weights and biases in neural networks. The choice of which gradient descent 
-					 method and its hyperparameter values can determine if cost minimization is likely to be achieved in an appropriate amount
-					  of time.</p>
-				<hr>
-				<p>Created By Dao Ming Lee and Nova Zhang</p>
-				<a class="btn btn-secondary" href="projectpage.html">Project Page</a>
+                <h1>Visualizing Interactive Gradient Descent</h1>
+                <p>Dao Ming and Nova Zhang</p>
+                
+                <img src="descent_viz.png" style="width:80%;margin-left:0px;margin-right:0px">
+                <br>
+                <br>
+				<h3>Abstract</h3>
+				<p>This project seeks to address the knowledge gap users in fields associated with optimization have with 
+                    regards to gradient descent. Existing solutions are largely static, or lack a self-experimentation
+                     component for mastering key visual concepts. Interactive Gradient Descent describes our hands-on 
+                     and customizable visualization system that aims to educate and serve as a tool through the form of a 
+                     web application. It allows the user to explore the effects of adjusting hyperparameters (e.g. learning rates),
+                     initialization points and variable domains on different feature spaces on optimality and time to convergence. </p>
+                <h3>Running Instructions</h3>                        
+                Each page features:
+                <ul class="text-secondary">
+                    <li>
+                        A top bar with different gradient descent methods (SGD, Momentum, RMSProp, Adam, AMSgrad). 
+                    </li>
+                    <li>
+                        Click each circle to toggle the method. Hovering over each method text gives a short description of it
+                    </li>
+                    <li>
+                        After plotting, click ‘Iteration counter’ to display a bar chart comparing the no. of iterations each method requires.
+                    </li>
+                </ul>
+                <p>To run the descent methods, click anywhere on the feature space. </p>
+
+                The application can be navigated using the sidebar (toggled using ‘Options’). It consists of
+                <ul class="text-secondary">
+                    <li>
+                        Sample functions (‘Gaussian ‘Bowl’’, ‘Rastrigin’, ‘Rosenbrock’) corresponding to different feature spaces (contour plots).
+                    </li>
+                    <li>
+                        Custom: Allows for the user to input a given 2 variable (x,y) function, specifying the corresponding domain/range.
+                    </li>
+                    <li>
+                        Parameters: Allows user to set the learning rate for each gradient descent method
+                    </li>
+                    <li>
+                        About: Learn about the motivation behind the project and what gradient descent is.
+                    </li>
+                </ul>
 			</div>
 		</div>
 	</div>

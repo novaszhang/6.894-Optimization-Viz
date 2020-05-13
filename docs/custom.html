@@ -24,21 +24,17 @@
 		        </div>
 		        <ul class="list-unstyled components" style="padding-left: 5px">
 		            <!-- Function: -->
-		            <label for="func"> Function: (w/ local/global minima) </label>
-		            <input type="text" id="funcInput" name="func" size="18" value="(x^2 + y - 11)^2 + (x + y^2 - 7)^2">
-		            <br>
+		            <label for="func"> Define Function </label>
+		            <input type="text" id="funcInput" name="func" size="18" style="margin-bottom:2%" value="(x^2 + y - 11)^2 + (x + y^2 - 7)^2">
 		            <label for="xmin"> X min &nbsp;</label>
 		            <input type="text" id="xmin" name="xmin" size="2" value="-5"><br>
 		            <label for="ymin"> Y min &nbsp;</label>
-		            <input type="text" id="ymin" name="ymin" size="2" value="-5"><br>
-		            <br>
+		            <input type="text" id="ymin" name="ymin" size="2" value="-5" style="margin-bottom:5%"><br>
 		            <label for="xmax"> X max </label>
 		            <input type="text" id="xmax" name="xmax" size="2" value="5"><br>
 		            <label for="ymax"> Y max </label>
 		            <input type="text" id="ymax" name="ymax" size="2" value="5"><br>
-		            <br>
-		            <button onclick="plotter(true)">Submit</button>
-
+		            <button onclick="plotter(true)" class="btn btn-secondary" style="margin-top:2%;margin-bottom: 8%;">Submit</button>
 		            <li class="active">
 		                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Function</a>
 		                <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -56,7 +52,8 @@
 							</li>
 		                </ul>
 		            </li>
-		            <p> Set these parameters </p>
+		            <br>
+		            <p style="margin-bottom:0px"> Parameters </p>
 		            <li class="active">
 		                <a href="#LRSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Learning Rate</a>
 		                <ul class="collapse list-unstyled" id="LRSubmenu" style="padding-left: 5px">
